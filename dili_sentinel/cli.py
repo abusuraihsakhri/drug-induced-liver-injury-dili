@@ -69,6 +69,10 @@ def main(argv=None):
         return 0
 
     if args.command == "batch":
+        import os
+        if not os.path.isfile(args.input):
+            print(f"Error: Input file '{args.input}' not found.", file=sys.stderr)
+            return 1
         with open(args.input, mode="r", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             fieldnames = list(reader.fieldnames or [])

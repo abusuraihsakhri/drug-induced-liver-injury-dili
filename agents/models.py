@@ -6,7 +6,7 @@ Standard: wwPDB / IUPAC / OpenSMILES / ISAC Standards
 import datetime
 from enum import Enum
 from typing import Dict, Any, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class UrgencyLevel(str, Enum):
@@ -22,14 +22,29 @@ class SystemIntegrityStatus(str, Enum):
 
 
 class SystemTaskPayload(BaseModel):
-    task_id: str = Field(..., description="Unique task / case identifier")
-    target_identifier: str = Field(..., description="Entity, patient key, or genomic/cryptographic target")
+    task_id: str = Field(..., min_length=1, max_length=128, description="Unique task / case identifier")
+    target_identifier: str = Field(..., min_length=1, max_length=128, description="Entity, patient key, or genomic/cryptographic target")
     primary_metric: float = Field(..., description="Primary domain measurement or score")
     secondary_metric: float = Field(default=0.0, description="Secondary kinetic or confidence score")
-    status_descriptor: str = Field(default="NOMINAL", description="Status code or phenotype descriptor")
+    status_descriptor: str = Field(default="NOMINAL", max_length=64, description="Status code or phenotype descriptor")
     is_critical_flag: bool = Field(default=False, description="Emergency escalation or high priority trigger")
     attributes: Dict[str, Any] = Field(default_factory=dict, description="Metadata key-value pairs")
     timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+    @field_validator("task_id", "target_identifier")
+    @classmethod
+    def validate_no_control_chars(cls, v: str) -> str:
+        if any(ord(c) < 32 and c not in "\t\n\r" for c in v):
+            raise ValueError("Field must not contain control characters")
+        return v.strip()
+
+    @field_validator("primary_metric", "secondary_metric")
+    @classmethod
+    def validate_finite_number(cls, v: float) -> float:
+        import math
+        if math.isnan(v) or math.isinf(v):
+            raise ValueError("Metric must be a finite number")
+        return v
 
 
 class AgentAlert(BaseModel):
