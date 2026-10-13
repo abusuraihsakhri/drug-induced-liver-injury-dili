@@ -34,11 +34,18 @@ class SystemTaskPayload(BaseModel):
     @field_validator("task_id", "target_identifier")
     @classmethod
     def validate_no_control_chars(cls, v: str) -> str:
-        if any(ord(c) < 32 and c not in "\t\n\r" for c in v):
+        if any(ord(c) < 32 or ord(c) == 127 for c in v):
             raise ValueError("Field must not contain control characters")
         if not v.strip():
             raise ValueError("Identifier must not consist only of whitespace")
         return v.strip()
+
+    @field_validator("status_descriptor")
+    @classmethod
+    def validate_descriptor(cls, v: str) -> str:
+        if any(ord(c) < 32 or ord(c) == 127 for c in v):
+            raise ValueError("Status descriptor must not contain control characters")
+        return v
 
     @field_validator("primary_metric", "secondary_metric")
     @classmethod
