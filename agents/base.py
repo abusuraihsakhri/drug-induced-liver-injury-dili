@@ -8,6 +8,7 @@ import json
 import time
 import hmac
 import hashlib
+import copy
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field
@@ -97,7 +98,7 @@ class AuditTrail:
         return True
 
     def get_trail(self) -> List[Dict[str, Any]]:
-        return self.logs
+        return copy.deepcopy(self.logs)
 
 
 try:
