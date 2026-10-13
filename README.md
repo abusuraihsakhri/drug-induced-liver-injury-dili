@@ -1,5 +1,7 @@
 # Drug-Induced Liver Injury (DILI) — Sentinel
 
+### [Open the Live Application →](https://abusuraihsakhri.github.io/drug-induced-liver-injury-dili/)
+
 A deterministic, educational rule-evaluation project with a browser console, two Python evaluation pipelines, a command-line interface, and a FastAPI service.
 
 **Scope and evidence limitation:** The existing numerical cutoffs are illustrative operational thresholds, not established DILI diagnostic criteria or a clinically validated hepatotoxicity prediction model. The project does **not** compute Hy's law, RUCAM, molecular BSEP IC50, mitochondrial toxicity, reactive-metabolite production, or patient-level DILI probability. Do not use outputs to make clinical decisions.
