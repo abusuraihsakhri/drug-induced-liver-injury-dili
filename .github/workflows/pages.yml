@@ -31,3 +31,16 @@ jobs:
           path: ./web
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Smoke test deployed HTML and assets
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          base="${SITE_URL%/}"
+          curl --fail --silent --show-error --location --retry 12 --retry-delay 5 --retry-all-errors "$base/" -o /tmp/dili-index.html
+          curl --fail --silent --show-error --location --retry 12 --retry-delay 5 --retry-all-errors "$base/logic.js" -o /tmp/dili-logic.js
+          curl --fail --silent --show-error --location --retry 12 --retry-delay 5 --retry-all-errors "$base/app.js" -o /tmp/dili-app.js
+          grep -q "DILI Sentinel" /tmp/dili-index.html
+          grep -q "function evaluateTask" /tmp/dili-logic.js
+          grep -q "audit-form" /tmp/dili-app.js
+          echo "Published page and application assets verified"
