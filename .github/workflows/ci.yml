@@ -9,6 +9,8 @@ on:
 jobs:
   test-and-audit:
     runs-on: ubuntu-latest
+    env:
+      AUDIT_SECRET_KEY: ci-only-dili-audit-key-not-for-production
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
@@ -24,17 +26,29 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install fastapi uvicorn pydantic pytest
+        pip install -e '.[server,test]'
 
     - name: Run Pytest Suite
       run: |
         pytest -v
 
-    - name: Security SAST & Zero-PHI Audit
+    - name: Check browser application
+      run: |
+        node --check web/logic.js
+        node --check web/app.js
+        node --test web/logic.test.cjs
+
+    - name: Security and audit smoke check
       run: |
         python -c "
         from agents.base import PHIGuard, AuditLogger
         import pytest
         assert AuditLogger.verify_integrity() is True
+        from agents.base import SecurityException
+        try:
+            PHIGuard.assert_no_phi('MRN-994827')
+            raise AssertionError('PHI detection did not reject test MRN')
+        except SecurityException:
+            pass
         print('Security & Zero-PHI Audit Passed!')
         "

@@ -36,6 +36,8 @@ class SystemTaskPayload(BaseModel):
     def validate_no_control_chars(cls, v: str) -> str:
         if any(ord(c) < 32 and c not in "\t\n\r" for c in v):
             raise ValueError("Field must not contain control characters")
+        if not v.strip():
+            raise ValueError("Identifier must not consist only of whitespace")
         return v.strip()
 
     @field_validator("primary_metric", "secondary_metric")
