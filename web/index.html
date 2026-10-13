@@ -1,236 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drug Induced Liver Injury Dili — Operations Console</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #090d16;
-            --card: #111827;
-            --border: #1f293d;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.25);
-            --text: #f3f4f6;
-            --text-muted: #9ca3af;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 2rem;
-            min-height: 100vh;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .header-title h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
-        .header-title p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
-        .badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: var(--accent-glow);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 1.5rem;
-        }
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-        input, select, textarea {
-            width: 100%;
-            padding: 0.65rem 0.9rem;
-            background: #0d1322;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-        input:focus, textarea:focus { outline: none; border-color: var(--accent); }
-        .btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.4rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-        }
-        .btn:hover { background: #2563eb; }
-        .terminal {
-            background: #060911;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: #10b981;
-            height: 380px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-        .metrics-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .metric-box {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .metric-val { font-size: 1.4rem; font-weight: 700; color: #fff; margin-top: 0.25rem; }
-        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DILI Sentinel | Rule Evaluation Console</title>
+  <meta name="description" content="Local, illustrative threshold-rule evaluation for the DILI Sentinel repository. Not a clinical prediction model.">
+  <style>
+    :root {color-scheme:dark;--bg:#0b1220;--panel:#142033;--border:#2d3a52;--text:#f1f5fb;--muted:#b6c4d6;--accent:#79b6ff;--warn:#ffd188;--danger:#ffa2a2;--good:#95e3be}
+    * {box-sizing:border-box}
+    body {margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+    main {max-width:1160px;margin:auto;padding:28px 22px 50px}
+    header {display:flex;justify-content:space-between;gap:20px;align-items:start;margin-bottom:24px}
+    h1 {font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.03em;margin:0}
+    h2 {font-size:1.05rem;margin:0 0 16px}
+    p {margin:7px 0 0}
+    .eyebrow {color:var(--accent);font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;margin:0 0 4px}
+    .muted,.hint {color:var(--muted)}
+    .hint {font-size:.84rem;margin:14px 0 0}
+    .pill {font-size:.77rem;border:1px solid var(--border);border-radius:99px;padding:6px 12px;white-space:nowrap}
+    .notice {background:#1c2939;border-left:3px solid var(--warn);padding:14px 18px;border-radius:6px;margin-bottom:22px}
+    .notice strong {color:var(--warn)}
+    .stats {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+    .stat,.panel {background:var(--panel);border:1px solid var(--border);border-radius:12px}
+    .stat {padding:14px 17px}
+    .stat span {display:block;color:var(--muted);font-size:.81rem}
+    .stat strong {display:block;margin-top:2px;font-size:1.1rem;overflow-wrap:anywhere}
+    .layout {display:grid;grid-template-columns:minmax(310px,1fr) minmax(300px,1.1fr);gap:18px}
+    .panel {padding:22px;min-width:0}
+    .fields {display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .full {grid-column:1/-1}
+    label {display:block;font-size:.85rem;font-weight:600;margin-bottom:6px}
+    input:not([type=checkbox]) {width:100%;font:inherit;background:#0c1729;color:var(--text);border:1px solid #586782;border-radius:7px;padding:10px 11px;min-height:43px}
+    input:focus-visible,button:focus-visible,a:focus-visible {outline:3px solid var(--accent);outline-offset:3px}
+    .check {display:flex;align-items:center;gap:10px;padding:10px 0}
+    .check label {margin:0}
+    .check input {width:19px;height:19px;accent-color:var(--accent)}
+    .actions {display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+    button {font:inherit;font-weight:650;cursor:pointer;padding:10px 17px;border-radius:8px;border:1px solid #7cb6f6;background:#3174c8;color:white}
+    button.secondary {background:transparent;color:var(--text);border-color:#64758e}
+    button:disabled {opacity:.45;cursor:not-allowed}
+    .status {font-weight:700;padding:11px 14px;background:#202e45;border-radius:8px;overflow-wrap:anywhere}
+    .status[data-tone=warning]{color:var(--warn)} .status[data-tone=critical],.status[data-tone=error]{color:var(--danger)} .status[data-tone=nominal]{color:var(--good)}
+    pre {font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;overflow-y:auto;max-height:515px;min-height:250px;background:#091426;border:1px solid var(--border);padding:16px;border-radius:8px;color:#dae9fa;margin:15px 0}
+    footer {margin-top:20px;color:var(--muted);font-size:.84rem}
+    footer a {color:var(--accent)}
+    @media(max-width:760px){header{flex-direction:column}.layout{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:first-child{grid-column:1/-1}}
+    @media(max-width:450px){main{padding:20px 12px}.fields{grid-template-columns:1fr}.panel{padding:16px}.stat{padding:12px}}
+  </style>
+  <script src="./logic.js" defer></script>
+  <script src="./app.js" defer></script>
 </head>
 <body>
-
-    <div class="header">
-        <div class="header-title">
-            <h1>Drug Induced Liver Injury Dili</h1>
-            <p>Domain: Clinical & Cryptographic AI | Standard: CAP / CLSI / NIST Standards | LabMind-Atlas Architecture</p>
-        </div>
-        <div>
-            <span class="badge">Air-Gapped Active</span>
-            <span class="badge" style="background: rgba(16,185,129,0.2); color: #10b981; border-color: #10b981;">Zero-PHI Guard Active</span>
-        </div>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">Drug-induced liver injury · Repository demonstration</p>
+        <h1>DILI Sentinel — Rule Evaluation Console</h1>
+        <p class="muted">Browser-local evaluation of existing operational threshold rules</p>
+      </div>
+      <span class="pill">Local · unsigned · no server</span>
+    </header>
+    <div class="notice" role="note"><strong>Research demonstration only.</strong> Thresholds 25 (primary) and 12 (secondary) are illustrative values inherited from the repository, without defined units or clinical validation. This tool does not estimate DILI risk, classify Hy’s law, predict BSEP IC₅₀, or provide treatment recommendations. Do not enter patient-identifying information.</div>
+    <div class="stats" aria-label="Session statistics">
+      <div class="stat"><span>Processing mode</span><strong>Browser only</strong></div>
+      <div class="stat"><span>Evaluations this session</span><strong id="task-count">0</strong></div>
+      <div class="stat"><span>Latest alerts</span><strong id="alert-count">—</strong></div>
     </div>
-
-    <div class="metrics-bar">
-        <div class="metric-box">
-            <div class="metric-label">System Status</div>
-            <div class="metric-val" style="color: var(--success);" id="m-status">OPTIMAL</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">Tasks Processed</div>
-            <div class="metric-val" id="m-tasks">142</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">Audit Blocks Signed</div>
-            <div class="metric-val" id="m-audit">142</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">PHI Interceptions</div>
-            <div class="metric-val" style="color: var(--accent);" id="m-phi">0</div>
-        </div>
+    <div class="layout">
+      <section class="panel" aria-labelledby="form-title">
+        <h2 id="form-title">Evaluation inputs</h2>
+        <form id="audit-form">
+          <div class="fields">
+            <div class="full"><label for="task_id">Task ID</label><input id="task_id" name="task_id" maxlength="128" required value="DEMO-001"></div>
+            <div class="full"><label for="target_identifier">Non-identifying target label</label><input id="target_identifier" name="target_identifier" maxlength="128" required value="SAMPLE-A"></div>
+            <div><label for="primary_metric">Primary metric</label><input id="primary_metric" name="primary_metric" type="number" step="any" required value="28.5"></div>
+            <div><label for="secondary_metric">Secondary metric</label><input id="secondary_metric" name="secondary_metric" type="number" step="any" required value="14.2"></div>
+            <div class="full"><label for="status_descriptor">Status descriptor</label><input id="status_descriptor" name="status_descriptor" maxlength="64" required value="DISCORDANT"></div>
+            <div class="full check"><input id="is_critical_flag" name="is_critical_flag" type="checkbox"><label for="is_critical_flag">Apply manual critical flag</label></div>
+          </div>
+          <div class="actions"><button type="submit">Evaluate rules</button><button type="button" id="reset-form" class="secondary">Reset example</button></div>
+        </form>
+        <p class="hint">Matching rules: primary &gt; 25; secondary &gt; 12; explicit critical flag; descriptor keywords (DISCORDANT, ANOMALY, MUTANT, VIOLATION, FAIL, REJECT). Values at the boundary do not trigger threshold alerts.</p>
+      </section>
+      <section class="panel" aria-labelledby="result-title">
+        <h2 id="result-title">Unsigned evaluation dossier</h2>
+        <div id="evaluation-status" class="status" data-tone="neutral" role="status" aria-live="polite">Ready for local evaluation</div>
+        <pre id="result-json" aria-label="Evaluation result">Run an evaluation to see an unsigned dossier.</pre>
+        <button id="download-json" class="secondary" type="button" disabled>Download JSON</button>
+        <p class="hint">Results remain in this tab until reset or reload. JSON downloads are generated locally. Unlike the Python service, this page does not create cryptographic audit signatures.</p>
+      </section>
     </div>
-
-    <div class="grid">
-        <div class="card">
-            <h2>⚙️ Dispatch Distributed Component Audit</h2>
-            <div class="form-group">
-                <label>Task / Sample ID</label>
-                <input type="text" id="task_id" value="TASK-2026-LIVE-01">
-            </div>
-            <div class="form-group">
-                <label>Target Identifier</label>
-                <input type="text" id="target_id" value="SPECIMEN-ALPHA-77">
-            </div>
-            <div class="form-group">
-                <label>Primary Measurement / Value</label>
-                <input type="number" id="primary_metric" value="29.4" step="0.1">
-            </div>
-            <div class="form-group">
-                <label>Secondary Metric / Kinetic Index</label>
-                <input type="number" id="secondary_metric" value="14.8" step="0.1">
-            </div>
-            <div class="form-group">
-                <label>Status / Phenotype Descriptor</label>
-                <input type="text" id="status_descriptor" value="DISCORDANT_ANOMALY">
-            </div>
-            <div class="form-group">
-                <label><input type="checkbox" id="is_critical" checked> Trigger Emergency / Critical Flag</label>
-            </div>
-            <button class="btn" onclick="runAudit()">Execute Distributed Component Audit</button>
-        </div>
-
-        <div class="card">
-            <h2>📊 Real-Time Consensus Dossier & Audit Log</h2>
-            <div class="terminal" id="outputConsole">// Drug Induced Liver Injury Dili Operations Console Ready
-// Connection established with Air-Gapped Supervisor
-// Cryptographic HMAC-SHA256 audit ledger loaded.
-// Ready for live task payload dispatch...</div>
-        </div>
-    </div>
-
-    <script>
-        async function runAudit() {
-            const consoleEl = document.getElementById('outputConsole');
-            consoleEl.innerText = "// Dispatching task across specialized workers...
-// Invoking InvariantQCWorker, SafetyEscalationWorker, ProtocolWorker...";
-
-            const payload = {
-                task_id: document.getElementById('task_id').value,
-                target_identifier: document.getElementById('target_id').value,
-                primary_metric: parseFloat(document.getElementById('primary_metric').value),
-                secondary_metric: parseFloat(document.getElementById('secondary_metric').value),
-                status_descriptor: document.getElementById('status_descriptor').value,
-                is_critical_flag: document.getElementById('is_critical').checked
-            };
-
-            try {
-                const res = await fetch('/api/audit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                consoleEl.innerText = JSON.stringify(data, null, 2);
-                document.getElementById('m-tasks').innerText = parseInt(document.getElementById('m-tasks').innerText) + 1;
-                document.getElementById('m-audit').innerText = parseInt(document.getElementById('m-audit').innerText) + 1;
-            } catch (err) {
-                consoleEl.innerText = "// Offline / Simulation Output:\n" + JSON.stringify({
-                    dossier_id: "DOSSIER-SIM-" + Math.floor(Math.random()*10000),
-                    system: "drug-induced-liver-injury-dili",
-                    domain: "Clinical & Cryptographic AI",
-                    task_id: payload.task_id,
-                    overall_urgency: payload.is_critical_flag ? "CRITICAL_STAT_PANIC" : "ELEVATED_RISK",
-                    integrity_status: "DISCORDANT_ANOMALY",
-                    alerts: [
-                        { worker: "InvariantQCWorker", alert: "Primary metric exceeds upper reference bound" },
-                        { worker: "SafetyEscalationWorker", alert: "Critical emergency interlock flag active" }
-                    ],
-                    audit_hash: "HMAC_SHA256_e83f9a72b941d6c381f9"
-                }, null, 2);
-            }
-        }
-    </script>
+    <footer>Source and Python API: <a href="https://github.com/abusuraihsakhri/drug-induced-liver-injury-dili">repository</a>. Offline processing works after the page and scripts have loaded; no uploads or external application APIs are used.</footer>
+  </main>
 </body>
 </html>
